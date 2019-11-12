@@ -12,22 +12,12 @@ static const char _jtab[2][128] =
 	{
 		2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
 		2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
-		2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 2, 2, 2, 2,
+		2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 2, 2, 2, 2,
 		2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
 		2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
-		2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 1, 3, 2, 2,
+		2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 2, 2,
 		2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
-		2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 2, 2, 2
-	},
-	{
-		2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
-		2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
-		2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
-		2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
-		2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
-		2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
-		2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
-		2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2
+		2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2
 	}
 };
  
@@ -91,15 +81,11 @@ token_t scan (_lexer_t *lex)
 				_next_state (lex);
 				break;
 			case 1:
-				++(lex->peek);
-				_next_state (lex);
-				break;
-			case 2:
-				token.type	= SYMBOL;
+				token.type 	= CTRL_SYMBOL;
 				token.sym 	= *(lex->peek++);
 				goto EXIT;
-			case 3:
-				token.type 	= CTRL_SYMBOL;
+			case 2:
+				token.type	= SYMBOL;
 				token.sym 	= *(lex->peek++);
 				goto EXIT;
 		}
@@ -122,9 +108,14 @@ int main (int argc, char *argv[])
 	token_t tok	= {0};
 	_lexer_t *lex	= new_lexer (argv[1]);
 	
-	do
+	for (;; ++res)
 	{
 		tok = scan (lex);
+
+		*res = tok.sym;
+		if (*res == '\0')
+			break;
+
 		switch (tok.type)
 		{
 			case SYMBOL:
@@ -134,11 +125,9 @@ int main (int argc, char *argv[])
 				printf ("CTRL_SYMBOL, ");
 				break;
 		}
-		printf ("%c\n", tok.sym);
 
-		*res = tok.sym;
+		printf ("%c\n", *res);
 	}
-	while (*res++ != '\0');
 
 	free_lexer (lex);
 
