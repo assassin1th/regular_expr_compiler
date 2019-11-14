@@ -32,12 +32,18 @@ void free_sym_set (sym_set_t *__sym_set);
 /*
  * Fucntion add symbol
  */
-inline _inline void add_symbol (sym_set_t *__sym_set, char __sym);
+inline _inline void add_symbol (sym_set_t *__sym_set, char __sym)
+{
+	__sym_set->sym_bits[__sym >> 6] |= (1 << (__sym & 0x3F));
+}
 
 /*
  * Funcion for check symbol in set
  * 0 - not found, 1 - exists
  */
-inline _inline int check_symbol (sym_set_t *__sym_set, char __sym);
+inline _inline int check_symbol (sym_set_t *__sym_set, char __sym)
+{
+	return __sym_set->sym_bits[__sym >> 6] & (1 << (__sym & 0x3f));
+}
 
 #endif // SYM_SET_H_
