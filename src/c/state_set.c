@@ -25,7 +25,7 @@ typedef struct __l_node
  * Function _new_list_node create new list node and initialize it with
  * __state and __next argument
  */
-inline _inline static _list_node_t *__new_list_node (unsigned __state, _list_node_t *__next)
+inline static _list_node_t *__new_list_node (unsigned __state, _list_node_t *__next) _inline 
 {
 	_list_node_t *node = (_list_node_t *) malloc (sizeof (_list_node_t));
 	
@@ -41,7 +41,7 @@ inline _inline static _list_node_t *__new_list_node (unsigned __state, _list_nod
 /*
  * Function _free_list_node delete all nodes in list where __list_node is a head
  */
-inline _inline static void _free_list_node (_list_node_t *__list_node)
+inline static void _free_list_node (_list_node_t *__list_node) _inline
 {
 	if (__list_node->next)
 		free_list_node (__list_node->next);
@@ -49,23 +49,23 @@ inline _inline static void _free_list_node (_list_node_t *__list_node)
 	free (__list_node);
 }
 
-inline _inline static _list_node_t *_copy_list_node (const _list_node_t *__src_list_node)
+inline static _list_node_t *_copy_list_node (const _list_node_t *__src_list_node) _inline
 {
 	return _new_list_node (__src_list_node->state, __src_list_node->next);
 }
 
-inline _inline static void _insert_by_order (_list_node_t **__head, unsigned __state)
+inline static void _insert_by_order (_list_node_t **__head, unsigned __state) _inline
 {
-	register _list_node_t **tmp = __head;
-	for (;*tmp; tmp = (_list_node_t **) (*tmp)->next)
-		if ((*tmp)->state < __state)
+	register _list_node_t **it_node = __head;
+	for (;*it_node; it_node = (_list_node_t **) (*it_node)->next)
+		if ((*it_node)->state < __state)
 			continue;
-		else if ((*tmp)->state == __state)
+		else if ((*it_node)->state == __state)
 			goto EXIT;
 		else
 			break;
 	
-	*tmp = __new_list_node (__state, *tmp);
+	*it_node = __new_list_node (__state, *it_node);
 EXIT:
 	return;
 }
