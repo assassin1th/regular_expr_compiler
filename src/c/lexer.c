@@ -37,7 +37,7 @@ typedef struct
 _lexer_t *new_lexer (const char *__src)
 {
 	size_t len = strlen (__src) + 1;
-	_lexer_t *lex = (_lexer_t *) malloc (sizeof (_lexer_t) + len);
+	_lexer_t *lex = (_lexer_t *) malloc (len + sizeof (_lexer_t));
 	
 	if (!lex)
 		goto EXIT;
@@ -66,14 +66,14 @@ void free_lexer (_lexer_t *__lex)
  * If we got operator symbol in 0 state, then function return token_t value with value.type = CTRL_SYMBOL and
  * value.sym = char_code
  */
-static void _next_state (_lexer_t *__lex)
+inline static void _next_state (_lexer_t *__lex) _inline
 {
 	__lex->state = _jtab[__lex->state][*(__lex->peek)];
 }
 
 token_t scan (_lexer_t *lex)
 {
-	token_t token = {0};
+	register token_t token = {0};
 	while (*(lex->peek) != '\0')
 		switch (lex->state)
 		{
