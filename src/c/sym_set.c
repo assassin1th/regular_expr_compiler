@@ -37,6 +37,7 @@ int main (int argc, char *argv[])
 			printf ("%c\n", c);
 
 	free_sym_set (sym_set);
+
 	return 0;
 }
 #endif // TEST

@@ -66,7 +66,7 @@ void free_lexer (_lexer_t *__lex)
  * If we got operator symbol in 0 state, then function return token_t value with value.type = CTRL_SYMBOL and
  * value.sym = char_code
  */
-inline static void _next_state (_lexer_t *__lex) _inline
+inline _inline static void _next_state (_lexer_t *__lex) 
 {
 	__lex->state = _jtab[__lex->state][*(__lex->peek)];
 }
