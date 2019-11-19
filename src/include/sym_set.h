@@ -3,12 +3,7 @@
 
 #include <stdint.h>
 
-/*
- * Inline attribute for set interfaces
- */
-#ifndef _inline
-#define _inline __attribute__ ((always_inline))
-#endif // _inline
+#include "attr.h"
 
 /*
  * Symbol set structure
@@ -27,12 +22,11 @@ sym_set_t *new_sym_set ();
 /*
  * Funciton free mem from set
  */
-void free_sym_set (sym_set_t *__sym_set);
+void free_sym_set (sym_set_t *__sym_set) _fastcall;
 
 /*
  * Fucntion add symbol
  */
-#include <stdio.h>
 inline void add_sym (sym_set_t *__sym_set, uint8_t __sym) _inline
 {
 	__sym_set->sym_bits[__sym >> 6] |= ((uint64_t) 1 << (__sym & 0x3F));
