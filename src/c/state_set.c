@@ -1,10 +1,6 @@
 #include <stdint.h>
 #include <stdlib.h>
-#ifndef _inline
-#define _inline __attribute__ ((always_inline))
-#endif // _inline
-#ifndef _fastcall
-#define _fastcall __attribute__ ((fastcall))
+#include "attr.h"
 
 /*
  * This module consists of few primitives:
@@ -39,14 +35,11 @@ inline static _list_node_t *__new_list_node (unsigned __state, _list_node_t *__n
 }
 
 /*
- * Function _free_list_node delete all nodes in list where __list_node is a head
+ * Function _free_list_node free mem on __list_node pointer
  */
-inline static void _free_list_node (_list_node_t *__list_node) _inline
+static void __free_list_node (_list_node_t *__list_node) _inline
 {
-	if (__list_node->next)
-		free_list_node (__list_node->next);
-	
-	free (__list_node);
+	free (__list_node)
 }
 
 inline static _list_node_t *_copy_list_node (const _list_node_t *__src_list_node) _inline
