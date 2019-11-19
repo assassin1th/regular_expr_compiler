@@ -2,7 +2,7 @@
 #include <string.h> // strlen, strcmp (in test mode), memcpy
 #include <stdlib.h> // malloc, free
 #include "token.h" // token structure
-#include <stdio.h>
+#include "attr.h"
 
 /*
  * Jump table for state machine

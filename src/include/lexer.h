@@ -10,9 +10,7 @@
  * For integer types with fixed lengths
  */
 #include <stdint.h>
-#ifndef _fastcall
-#define _fastcall __attribute__ ((fastcall))
-#endif // _fastcall
+#include "attr.h"
 /*
  * Lexer structure, u don't need really know what is this
  */
