@@ -9,16 +9,20 @@ then
 	do
 		test_string=`line < "$file"`
 		expected_out=`tail -n +2 < "$file"`
-		out=`$current_dir/bin/$1 "$test_string"`
+		out=`$current_dir/bin/$1 $test_string`
 
+		echo "$current_dir/bin/$1 $test_string"
 		if [ `echo $?` != "0" ]
 		then
+			echo "args: $test_string"
 			echo "Bad exit code"
 		fi
 
 		if [ "$expected_out" != "$out" ]
 		then
 			echo "Wrong output"
+			echo "expected: $expected_out"
+			echo "recieved: $out"
 		fi
 	done
 fi

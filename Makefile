@@ -18,10 +18,15 @@ TEST_LEXER_DEPS		= \
 TEST_SYM_SET		= $(TEST_BIN_DIR)sym_set
 TEST_SYM_SET_DEPS	= \
 				$(TEST_BIN_DIR)sym_set.o
+TEST_STATE_SET		= $(TEST_BIN_DIR)state_set
+TEST_STATE_SET_DEPS	= \
+				$(TEST_BIN_DIR)state_set.o
 
 $(TEST_SYM_SET): $(TEST_SYM_SET_DEPS)
 	gcc $^ -o $@
 $(TEST_LEXER): $(TEST_LEXER_DEPS)
+	gcc $^ -o $@
+$(TEST_STATE_SET): $(TEST_STATE_SET_DEPS)
 	gcc $^ -o $@
 
 $(TEST_BIN_DIR)%.o: $(C_SRC_DIR)%.c
@@ -32,9 +37,10 @@ $(BIN_DIR)%.o: $(C_SRC_DIR)%.c
 
 .PHONY: test clean
 
-test: $(TEST_LEXER) $(TEST_SYM_SET)
+test: $(TEST_LEXER) $(TEST_SYM_SET) $(TEST_STATE_SET)
 	./$(TEST_DIR)run_tests.sh lexer
 	./$(TEST_DIR)run_tests.sh sym_set
+	./$(TEST_DIR)run_tests.sh state_set
 
 clean:
 	rm -rf $(TEST_BIN_DIR)*
