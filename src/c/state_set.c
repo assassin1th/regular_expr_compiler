@@ -9,6 +9,8 @@
  * Basicly linked list is already sorted, for quick insert and search
  * Set interfaces must perform operations on a list (like as delete and insert node)
  * only with list interfaces
+ *
+ * WARNING: I don't know how explain cases of pointer use
  */
 
 typedef struct __l_node
@@ -42,6 +44,10 @@ inline static _inline void __free_list_node (_list_node_t *__list_node)
 	free (__list_node);
 }
 
+/*
+ * Free mem from list where __head is pointer on poiter on first node
+ * At the end in __head NULL
+ */
 inline _inline static void _free_list (_list_node_t **__head)
 {
 	for (_list_node_t *tmp; *__head; *__head = tmp)	
@@ -51,11 +57,17 @@ inline _inline static void _free_list (_list_node_t **__head)
 	}
 }
 
+/*
+ * Copy list node function
+ */
 inline _inline static _list_node_t *_copy_list_node (const _list_node_t *__src_list_node)
 {
 	return __new_list_node (__src_list_node->state, __src_list_node->next);
 }
 
+/*
+ * Function insert node in low order
+ */
 inline _inline static void _insert_by_order (_list_node_t **__head, unsigned __state)
 {
 	register _list_node_t **it_node = __head;
