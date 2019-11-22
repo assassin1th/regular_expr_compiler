@@ -76,6 +76,7 @@ EXIT:
 #ifdef TEST
 #include <stdio.h>
 #include <ctype.h>
+#include <string.h>
 
 void print_list (const _list_node_t *__head)
 {
@@ -85,12 +86,13 @@ void print_list (const _list_node_t *__head)
 
 void list_from_str (_list_node_t **__head, const char *__src)
 {
-	for (int len = 0, val = 0; (len = sscanf (__src, "%d", &val)) > 0;)
+	char val[256];
+	while (sscanf (__src, "%s", val) > 0)
 	{
-		__src += len;
+		__src += strlen (val);
 		while (isspace (*__src))
 			++__src;
-		_insert_by_order (__head, val);
+		_insert_by_order (__head, atoi (val));
 	}
 }
 
@@ -101,14 +103,19 @@ int main (int argc, char *argv[])
 		return 1;
 	}
 
-	_list_node_t *head = NULL;
-	unsigned val = 0;
+	_list_node_t *lists[--argc];
 
-	for (int i = 1, len = 0; i < argc; ++i)
+	++argv;
+	for (int i = 0; i < argc; ++i)
 	{
-		list_from_str (&head, argv[i]);
-		print_list (head);
-		_free_list (&head);
+		lists[i] = NULL;
+		list_from_str (&lists[i], argv[i]);
+		print_list (lists[i]);
+	}
+
+	for (int i = 0; i < argc; ++i)
+	{
+		_free_list (&lists[i]);
 	}
 	return 0;
 }
