@@ -58,14 +58,6 @@ inline _inline static void _free_list (_list_node_t **__head)
 }
 
 /*
- * Copy list node function
- */
-inline _inline static _list_node_t *_copy_list_node (const _list_node_t *__src_list_node)
-{
-	return __new_list_node (__src_list_node->state, __src_list_node->next);
-}
-
-/*
  * Function insert node in low order
  */
 inline _inline static void _insert_by_order (_list_node_t **__head, unsigned __state)
@@ -84,6 +76,24 @@ inline _inline static void _insert_by_order (_list_node_t **__head, unsigned __s
 EXIT:
 	return;
 }
+
+inline _inline static void _copy_list (const _list_node_t *__src_list_head, _list_node_t **__new_list_head)
+{
+	for (; __src_list_head; __new_list_head = *__new_list_head, __src_list_head = __src_list_head->next)
+		*__new_list_head = __new_list_node (__src_list_head->state, NULL); 
+}
+
+typedef struct __s_set
+{
+	_list_node_t *head;
+} state_set_t;
+
+state_set_t *new_state_set ()
+{
+	return (state_set_t *) calloc (1, sizeof (state_set_t));
+}
+
+
 
 #ifdef TEST
 #include <stdio.h>

@@ -13,39 +13,36 @@ typedef struct __s_set
 /*
  * Fucntion, produced empty set
  */
-state_set_t *new_state_set () _fastcall;
+state_set_t *new_state_set ();
 
 /*
  * Function, deleted set
  */
-inline void free_state_set (state_set_t *__set) _inline
-{
-	free (__set);
-}
+void free_state_set (state_set_t **__set);
 
 /*
  * Function, copied set to new set
  */
-state_set_t *copy_state_set (const state_set_t *__src_set) _fastcall;
+state_set_t *copy_state_set (const state_set_t *__src_set);
 
 /*
  * Function, updates set with new values
  */
-states_set_t *update_state_set (state_set_t *__src_set, unsigned __state) _fastcall;
+void update_state_set (state_set_t *__src_set, unsigned __state);
 
 /*
  * Function, returns union of two sets from arguments
  */
-state_set_t *union_state_set (const state_set_t *__first_src_set, const state_set_t *__second_src_set) _fastcall;
+state_set_t *union_state_set (const state_set_t *__first_src_set, const state_set_t *__second_src_set);
 
 /*
  * Function, returns intersection of two sets from arguments
  */
-state_set_t *intersection_state_set (const state_set_t *__first_src_set, const state_set_t *__second_src_set) _fastcall;
+state_set_t *intersection_state_set (const state_set_t *__first_src_set, const state_set_t *__second_src_set);
 
 /*
  * Function, returns true if set1 == set2 else false
  */
-int compare_state_set (const state_set_t *__first_src_set, const state_set_t *__second_src_set) _fastcall;
+int compare_state_set (const state_set_t *__first_src_set, const state_set_t *__second_src_set);
 
 #endif // STATE_SET_H_
