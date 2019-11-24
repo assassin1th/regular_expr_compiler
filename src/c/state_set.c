@@ -96,11 +96,11 @@ inline _inline static void _insert (_list_node_t **__next, unsigned __state)
 
 inline _inline static void _copy_list (_list_node_t **__new_list_head, const _list_node_t *__src_list_head)
 {
-	for (; __src_list_head; __new_list_head = *__new_list_head, __src_list_head = __src_list_head->next)
+	for (; __src_list_head; __new_list_head = (_list_node_t **) *__new_list_head, __src_list_head = __src_list_head->next)
 		*__new_list_head = __new_list_node (__src_list_head->state, NULL); 
 }
 
-inline _inline static int _list_cmp (const _list_node_t *__l_list, const _list_node_t *_r_list)
+inline _inline static int _list_cmp (const _list_node_t *__l_list, const _list_node_t *__r_list)
 {
 	register int res;
 	for (; !(res = __node_cmp (__l_list, __r_list)); __l_list = __l_list->next, __r_list = __r_list->next)
@@ -120,11 +120,11 @@ state_set_t *new_state_set ()
 
 void free_state_set (state_set_t *__set)
 {
-	_free_list (__set->head);
+	_free_list (&__set->head);
 	free (__set);
 }
 
-void copy_state_set (const state_set_t *__src_set, state_set_t *__dest_set)
+void copy_state_set (state_set_t *__dest_set, const state_set_t *__src_set)
 {
 	_copy_list (&__dest_set->head, __src_set->head);
 }
@@ -145,21 +145,21 @@ void union_state_set (const state_set_t *__first_set, const state_set_t *__secon
 	const _list_node_t *f_list = __first_set->head;
 	const _list_node_t *s_list = __second_set->head;
 
-	for (; f_list; f_list = f_list->next, tail = (_list_node_t **) *tail;)
+	for (; f_list; f_list = f_list->next, tail = (_list_node_t **) *tail)
 		if (f_list->state <= s_list->state)
 		{
 			_insert (tail, f_list->state);
 		}
 		else
 		{
-			_list_node_t *tmp = f_list;
+			const _list_node_t *tmp = f_list;
 			f_list = s_list;
 			s_list = tmp;
 			
 			_insert (tail, f_list->state);
 		}
 		
-	for (; s_list; s_list = s_list->next, tail = tail->next)
+	for (; s_list; s_list = s_list->next, tail = (_list_node_t **) *tail)
 		_insert (tail, s_list->state);
 }
 
@@ -172,7 +172,7 @@ void intersection_state_set (const state_set_t *__first_set, const state_set_t *
 	for (; f_list; f_list = f_list->next)
 		if (f_list->state > s_list->state)
 		{
-			_list_node_t *tmp = f_list;
+			const _list_node_t *tmp = f_list;
 			f_list = s_list;
 			s_list = tmp;
 		} 
@@ -196,7 +196,7 @@ void print_list (const _list_node_t *__head)
 		printf ("%d%c", __head->state, (__head->next) ? ' ' : '\n');
 }
 
-void list_from_str (_list_node_t **__head, const char *__src)
+void set_from_str (state_set_t *__set, const char *__src)
 {
 	char val[256];
 	while (sscanf (__src, "%s", val) > 0)
@@ -204,7 +204,7 @@ void list_from_str (_list_node_t **__head, const char *__src)
 		__src += strlen (val);
 		while (isspace (*__src))
 			++__src;
-		_insert_by_order (__head, atoi (val));
+		update_state_set (__set, atoi (val));
 	}
 }
 
@@ -215,19 +215,19 @@ int main (int argc, char *argv[])
 		return 1;
 	}
 
-	_list_node_t *lists[--argc];
-
+	state_set_t *sets[--argc];
 	++argv;
 	for (int i = 0; i < argc; ++i)
 	{
-		lists[i] = NULL;
-		list_from_str (&lists[i], argv[i]);
-		print_list (lists[i]);
+		sets[i] = new_state_set ();
+		set_from_str (sets[i], argv[i]);
+
+		print_list (sets[i]->head);
 	}
 
 	for (int i = 0; i < argc; ++i)
 	{
-		_free_list (&lists[i]);
+		free_state_set (sets[i]);
 	}
 	return 0;
 }
