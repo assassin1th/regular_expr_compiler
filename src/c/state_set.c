@@ -44,7 +44,10 @@ inline static _inline void __free_list_node (_list_node_t *__list_node)
 	free (__list_node);
 }
 
-inline static _inline int __node_cmp (const _list_node_t *__l_node, const _list_node_t *__r_node)
+/*
+ * Cmp node: __l_node value - __r_node value
+ */
+inline static _inline int __cmp_node (const _list_node_t *__l_node, const _list_node_t *__r_node)
 {
 	if (!__l_node && !__r_node)
 		return 0;
@@ -69,21 +72,30 @@ inline _inline static void _free_list (_list_node_t **__head)
 	}
 }
 
+/*
+ * _insert Function insert a _list_node_t with __state value before __next node
+ */
 inline _inline static void _insert (_list_node_t **__next, unsigned __state)
 {
 	*__next = __new_list_node (__state, *__next);
 }
 
+/*
+ * _copy_list Function copied __src_list to __new_list
+ */
 inline _inline static void _copy_list (_list_node_t **__new_list_head, const _list_node_t *__src_list_head)
 {
 	for (; __src_list_head; __new_list_head = (_list_node_t **) *__new_list_head, __src_list_head = __src_list_head->next)
 		*__new_list_head = __new_list_node (__src_list_head->state, NULL); 
 }
 
-inline _inline static int _list_cmp (const _list_node_t *__l_list, const _list_node_t *__r_list)
+/*
+ * _cmp_list Function works like strcmp: __l_list - __r_list
+ */
+inline _inline static int _cmp_list (const _list_node_t *__l_list, const _list_node_t *__r_list)
 {
 	register int res;
-	for (; !(res = __node_cmp (__l_list, __r_list)); __l_list = __l_list->next, __r_list = __r_list->next)
+	for (; !(res = __cmp_node (__l_list, __r_list)); __l_list = __l_list->next, __r_list = __r_list->next)
 		;
 	return res;
 }
@@ -93,25 +105,45 @@ typedef struct __s_set
 	_list_node_t *head;
 } state_set_t;
 
+/*
+ * Return mem chunk with size equal sizeof (state_set_t)
+ */
 state_set_t *new_state_set ()
 {
 	return (state_set_t *) calloc (1, sizeof (state_set_t));
 }
 
+/*
+ * Free mem from __set
+ */
 void free_state_set (state_set_t *__set)
 {
 	_free_list (&__set->head);
 	free (__set);
 }
 
+/*
+ * Copy __src_set to existing, but empty __dest_set
+ */
 void copy_state_set (state_set_t *__dest_set, const state_set_t *__src_set)
 {
 	_copy_list (&__dest_set->head, __src_set->head);
 }
 
+/*
+ * Add new __state value to __dest set
+ */
 void update_state_set (void *__dest, unsigned __state)
 {
-	__dest = &((state_set_t *) __dest)->head;
+	__dest = &((state_set_t *) __dest)->head; // For memory saving
+	
+	/*
+	 * __dest contains a address to pointer on pointer on node
+	 * At each iteration value in node compares with __state value
+	 * If NODE value < __state value then continue cycle
+	 * Else IF NODE value == __state value we going to exit
+	 * Else (NODE value > __state value) we exit the cycle
+	 */
 	for (; *(_list_node_t **) __dest; __dest = &(*(_list_node_t **) __dest)->next)
 		if ((*(_list_node_t **) __dest)->state < __state)
 			continue;
@@ -119,54 +151,74 @@ void update_state_set (void *__dest, unsigned __state)
 			goto EXIT;
 		else 
 			break;
-	
+	// Insert value in linst (see _insert description)
 	_insert (__dest, __state);
 EXIT:
 	return;
 }
 
+/*
+ * Cmp to sets like strcmp: ret __l_set - __r_set
+ */
 int cmp_state_set (const state_set_t *__l_set, const state_set_t *__r_set)
 {
-	return _list_cmp (__l_set->head, __r_set->head);
+	return _cmp_list (__l_set->head, __r_set->head);
 }
 
+/*
+ * Union two sets to existing, but empty __dest set
+ */
 void union_state_set (void *__dest, const void *__first, const void *__second)
 {
+	// For saving memory
 	__dest = &((state_set_t *) __dest)->head;
 	__first = ((state_set_t *) __first)->head;
 	__second = ((state_set_t *) __second)->head;
 
+	/*
+	 * At each iteration we compare __first value and __second value
+	 * IF __first value < __second value use _insert methon to __dest list
+	 * ELIF __first value == __second value use _insert method to __dest list and go to new __second node
+	 * ELSE SWAP __first and __second for change iterable list and _insert __first value to __dest list
+	 */
 	for (; __first; __first = ((_list_node_t *) __first)->next, __dest = &(*(_list_node_t **) __dest)->next)
 	{
-		if (((_list_node_t *) __first)->state < ((_list_node_t *) __second)->state)
+		if (((_list_node_t *) __first)->state > ((_list_node_t *) __second)->state)
 		{
-			_insert (__dest, ((_list_node_t *) __first)->state);
+			const void *tmp = __first;
+			__first = __second;
+			__second = tmp;
 		}
 		else if (((_list_node_t *) __first)->state == ((_list_node_t *) __second)->state)
 		{
-			_insert (__dest, ((_list_node_t *) __first)->state);
 			__second = ((_list_node_t *) __second)->next;
 		}
-		else
-		{
-			const _list_node_t *tmp = __first;
-			__first = __second;
-			__second = tmp;
-			
-			_insert (__dest, ((_list_node_t *) __first)->state);
-		}
+		_insert (__dest, ((_list_node_t *) __first)->state);
 	}
 		
+	/*
+	 * _insert ramaining values to __dest list
+	 */
 	for (; __second; __second = ((_list_node_t *) __second)->next, __dest = &(*(_list_node_t **) __dest)->next)
 		_insert (__dest, ((_list_node_t *) __second)->state);
 }
 
+/*
+ * Intersection two sets to existing, but empty __dest set
+ */
 void intersection_state_set (void *__dest, const void *__first, const void *__second)
 {
+	// For memory saving
 	__dest = &((state_set_t *) __dest)->head;
 	__first = ((state_set_t *) __first)->head;
 	__second = ((state_set_t *) __second)->head;
 
+	/*
+	 * At each iteration we compare __first value and __second value
+	 * IF __first value > __second value SWAP __first and __second for change iterable list
+	 * ELIF __fist value == __second value _insert value to __dest list and move __first and __second iterators to new node
+	 * ELSE continue list
+	 */
 	for (; __first; __first = ((_list_node_t *) __first)->next)
 		if (((_list_node_t *) __first)->state > ((_list_node_t *) __second)->state)
 		{
