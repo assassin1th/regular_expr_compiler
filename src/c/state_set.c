@@ -138,17 +138,22 @@ int cmp_state_set (const state_set_t *__l_set, const state_set_t *__r_set)
 {
 	return _list_cmp (__l_set->head, __r_set->head);
 }
-
-void union_state_set (const state_set_t *__first_set, const state_set_t *__second_set, state_set_t *__dest_set)
+#include <stdio.h>
+void union_state_set (state_set_t *__dest_set, const state_set_t *__first_set, const state_set_t *__second_set)
 {
 	_list_node_t **tail = &__dest_set->head;
 	const _list_node_t *f_list = __first_set->head;
 	const _list_node_t *s_list = __second_set->head;
-
-	for (; f_list; f_list = f_list->next, tail = (_list_node_t **) *tail)
-		if (f_list->state <= s_list->state)
+	for (; f_list; f_list = f_list->next, tail = &(*tail)->next)
+	{
+		if (f_list->state < s_list->state)
 		{
 			_insert (tail, f_list->state);
+		}
+		else if (f_list->state == s_list->state)
+		{
+			_insert (tail, f_list->state);
+			s_list = s_list->next;
 		}
 		else
 		{
@@ -158,12 +163,13 @@ void union_state_set (const state_set_t *__first_set, const state_set_t *__secon
 			
 			_insert (tail, f_list->state);
 		}
+	}
 		
 	for (; s_list; s_list = s_list->next, tail = (_list_node_t **) *tail)
 		_insert (tail, s_list->state);
 }
 
-void intersection_state_set (const state_set_t *__first_set, const state_set_t *__second_set, state_set_t *__dest_set)
+void intersection_state_set (state_set_t *__dest_set, const state_set_t *__first_set, const state_set_t *__second_set)
 {
 	_list_node_t **tail = &__dest_set->head;
 	const _list_node_t *f_list = __first_set->head;
@@ -192,6 +198,8 @@ void intersection_state_set (const state_set_t *__first_set, const state_set_t *
 
 void print_list (const _list_node_t *__head)
 {
+	if (!__head)
+		printf ("empty\n");
 	for (; __head; __head = __head->next)
 		printf ("%d%c", __head->state, (__head->next) ? ' ' : '\n');
 }
@@ -224,6 +232,33 @@ int main (int argc, char *argv[])
 
 		print_list (sets[i]->head);
 	}
+
+	// Copy test
+	state_set_t *res = new_state_set ();
+
+	copy_state_set (res, sets[0]);
+	print_list (res->head);
+
+	free_state_set (res);
+
+	// Union test
+	res = new_state_set ();
+
+	union_state_set (res, sets[0], sets[1]);
+	print_list (res->head);
+
+	free_state_set (res);
+
+	// Intersection test
+	res = new_state_set ();
+
+	intersection_state_set (res, sets[0], sets[1]);
+	print_list (res->head);
+
+	free_state_set (res);
+
+	// Cmp test
+	printf ("%d\n", cmp_state_set (sets[0], sets[1]));
 
 	for (int i = 0; i < argc; ++i)
 	{
