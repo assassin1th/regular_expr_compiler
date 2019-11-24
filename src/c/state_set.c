@@ -69,26 +69,6 @@ inline _inline static void _free_list (_list_node_t **__head)
 	}
 }
 
-/*
- * Function insert node in low order
- */
-inline _inline static void _insert_by_order (_list_node_t **__head, unsigned __state)
-{
-	register _list_node_t **it_node = __head;
-	for (;*it_node; it_node = (_list_node_t **) *it_node){
-		if ((*it_node)->state < __state)
-			continue;
-		else if ((*it_node)->state == __state)
-			goto EXIT;
-		else
-			break;
-	}
-
-	*it_node = __new_list_node (__state, *it_node);
-EXIT:
-	return;
-}
-
 inline _inline static void _insert (_list_node_t **__next, unsigned __state)
 {
 	*__next = __new_list_node (__state, *__next);
@@ -129,65 +109,77 @@ void copy_state_set (state_set_t *__dest_set, const state_set_t *__src_set)
 	_copy_list (&__dest_set->head, __src_set->head);
 }
 
-void update_state_set (state_set_t *__set, unsigned __state)
+void update_state_set (void *__dest, unsigned __state)
 {
-	_insert_by_order (&__set->head, __state);
+	__dest = &((state_set_t *) __dest)->head;
+	for (; *(_list_node_t **) __dest; __dest = &(*(_list_node_t **) __dest)->next)
+		if ((*(_list_node_t **) __dest)->state < __state)
+			continue;
+		else if ((*(_list_node_t **) __dest)->state == __state)
+			goto EXIT;
+		else 
+			break;
+	
+	_insert (__dest, __state);
+EXIT:
+	return;
 }
 
 int cmp_state_set (const state_set_t *__l_set, const state_set_t *__r_set)
 {
 	return _list_cmp (__l_set->head, __r_set->head);
 }
-#include <stdio.h>
-void union_state_set (state_set_t *__dest_set, const state_set_t *__first_set, const state_set_t *__second_set)
+
+void union_state_set (void *__dest, const void *__first, const void *__second)
 {
-	_list_node_t **tail = &__dest_set->head;
-	const _list_node_t *f_list = __first_set->head;
-	const _list_node_t *s_list = __second_set->head;
-	for (; f_list; f_list = f_list->next, tail = &(*tail)->next)
+	__dest = &((state_set_t *) __dest)->head;
+	__first = ((state_set_t *) __first)->head;
+	__second = ((state_set_t *) __second)->head;
+
+	for (; __first; __first = ((_list_node_t *) __first)->next, __dest = &(*(_list_node_t **) __dest)->next)
 	{
-		if (f_list->state < s_list->state)
+		if (((_list_node_t *) __first)->state < ((_list_node_t *) __second)->state)
 		{
-			_insert (tail, f_list->state);
+			_insert (__dest, ((_list_node_t *) __first)->state);
 		}
-		else if (f_list->state == s_list->state)
+		else if (((_list_node_t *) __first)->state == ((_list_node_t *) __second)->state)
 		{
-			_insert (tail, f_list->state);
-			s_list = s_list->next;
+			_insert (__dest, ((_list_node_t *) __first)->state);
+			__second = ((_list_node_t *) __second)->next;
 		}
 		else
 		{
-			const _list_node_t *tmp = f_list;
-			f_list = s_list;
-			s_list = tmp;
+			const _list_node_t *tmp = __first;
+			__first = __second;
+			__second = tmp;
 			
-			_insert (tail, f_list->state);
+			_insert (__dest, ((_list_node_t *) __first)->state);
 		}
 	}
 		
-	for (; s_list; s_list = s_list->next, tail = (_list_node_t **) *tail)
-		_insert (tail, s_list->state);
+	for (; __second; __second = ((_list_node_t *) __second)->next, __dest = &(*(_list_node_t **) __dest)->next)
+		_insert (__dest, ((_list_node_t *) __second)->state);
 }
 
-void intersection_state_set (state_set_t *__dest_set, const state_set_t *__first_set, const state_set_t *__second_set)
+void intersection_state_set (void *__dest, const void *__first, const void *__second)
 {
-	_list_node_t **tail = &__dest_set->head;
-	const _list_node_t *f_list = __first_set->head;
-	const _list_node_t *s_list = __second_set->head;
+	__dest = &((state_set_t *) __dest)->head;
+	__first = ((state_set_t *) __first)->head;
+	__second = ((state_set_t *) __second)->head;
 
-	for (; f_list; f_list = f_list->next)
-		if (f_list->state > s_list->state)
+	for (; __first; __first = ((_list_node_t *) __first)->next)
+		if (((_list_node_t *) __first)->state > ((_list_node_t *) __second)->state)
 		{
-			const _list_node_t *tmp = f_list;
-			f_list = s_list;
-			s_list = tmp;
+			const void *tmp = __first;
+			__first = __second;
+			__second = tmp;
 		} 
-		else if (f_list->state == s_list->state)
+		else if (((_list_node_t *) __first)->state == ((_list_node_t *) __second)->state)
 		{
-			_insert (tail, f_list->state);
-			tail = (_list_node_t **) *tail;
+			_insert (__dest, ((_list_node_t *) __first)->state);
+			__dest = &(*(_list_node_t **) __dest)->next;
 
-			s_list = s_list->next;
+			__second = ((_list_node_t *) __second)->next;
 		}
 }
 
