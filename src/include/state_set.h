@@ -13,36 +13,36 @@ typedef struct __s_set
 /*
  * Fucntion, produced empty set
  */
-state_set_t *new_state_set ();
+extern "C" state_set_t *new_state_set ();
 
 /*
  * Function, deleted set
  */
-void free_state_set (state_set_t **__set);
+extern "C" void free_state_set (state_set_t **__set);
 
 /*
  * Function, copied set to new set
  */
-void copy_state_set (const state_set_t *__src_set, state_set_t *__dest_set);
+extern "C" void copy_state_set (const state_set_t *__src_set, state_set_t *__dest_set);
 
 /*
  * Function, updates set with new values
  */
-void update_state_set (state_set_t *__set, unsigned __state);
+extern "C" void update_state_set (state_set_t *__set, unsigned __state);
 
 /*
  * Function, returns union of two sets from arguments
  */
-void union_state_set (const state_set_t *__first_src_set, const state_set_t *__second_src_set, state_set_t *__dest_set);
+extern "C" void union_state_set (const state_set_t *__first_src_set, const state_set_t *__second_src_set, state_set_t *__dest_set);
 
 /*
  * Function, returns intersection of two sets from arguments
  */
-void intersection_state_set (const state_set_t *__first_src_set, const state_set_t *__second_src_set, state_set_t *__dest_set);
+extern "C" void intersection_state_set (const state_set_t *__first_src_set, const state_set_t *__second_src_set, state_set_t *__dest_set);
 
 /*
- * Function, returns true if set1 == set2 else false
+ * Return value of __first_src_set - __second_src_set, like strcmp
  */
-int state_set_cmp (const state_set_t *__first_src_set, const state_set_t *__second_src_set);
+extern "C" int cmp_state_set (const state_set_t *__first_src_set, const state_set_t *__second_src_set);
 
 #endif // STATE_SET_H_
