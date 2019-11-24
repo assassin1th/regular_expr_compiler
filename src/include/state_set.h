@@ -23,26 +23,26 @@ void free_state_set (state_set_t **__set);
 /*
  * Function, copied set to new set
  */
-state_set_t *copy_state_set (const state_set_t *__src_set);
+void copy_state_set (const state_set_t *__src_set, state_set_t *__dest_set);
 
 /*
  * Function, updates set with new values
  */
-void update_state_set (state_set_t *__src_set, unsigned __state);
+void update_state_set (state_set_t *__set, unsigned __state);
 
 /*
  * Function, returns union of two sets from arguments
  */
-state_set_t *union_state_set (const state_set_t *__first_src_set, const state_set_t *__second_src_set);
+void union_state_set (const state_set_t *__first_src_set, const state_set_t *__second_src_set, state_set_t *__dest_set);
 
 /*
  * Function, returns intersection of two sets from arguments
  */
-state_set_t *intersection_state_set (const state_set_t *__first_src_set, const state_set_t *__second_src_set);
+void intersection_state_set (const state_set_t *__first_src_set, const state_set_t *__second_src_set, state_set_t *__dest_set);
 
 /*
  * Function, returns true if set1 == set2 else false
  */
-int compare_state_set (const state_set_t *__first_src_set, const state_set_t *__second_src_set);
+int state_set_cmp (const state_set_t *__first_src_set, const state_set_t *__second_src_set);
 
 #endif // STATE_SET_H_
