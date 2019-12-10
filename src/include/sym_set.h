@@ -4,6 +4,7 @@
 #include <stdint.h>
 
 #include "attr.h"
+#include "alloc.h"
 
 /*
  * Symbol set structure
@@ -17,7 +18,7 @@ typedef struct
 /*
  * Funcition create empty set
  */
-sym_set_t *new_sym_set ();
+sym_set_t *new_sym_set (allocator_t *__alloc);
 
 /*
  * Funciton free mem from set

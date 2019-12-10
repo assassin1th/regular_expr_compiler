@@ -3,6 +3,7 @@
 #include <stdlib.h> // malloc, free
 #include "token.h" // token structure
 #include "attr.h"
+#include "alloc.h"
 
 /*
  * Jump table for state machine

@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include "attr.h"
+#include "alloc.h"
 
 /*
  * This module consists of few primitives:
@@ -23,9 +24,9 @@ typedef struct __l_node
  * Function _new_list_node create new list node and initialize it with
  * __state and __next argument
  */
-inline _inline static _list_node_t *__new_list_node (unsigned __state, _list_node_t *__next) 
+inline _inline static _list_node_t *__new_list_node (unsigned __state, _list_node_t *__next, allocator_t *__alloc) 
 {
-	_list_node_t *node = (_list_node_t *) malloc (sizeof (_list_node_t));
+	_list_node_t *node = (_list_node_t *) alloc (sizeof (_list_node_t), __alloc);
 	
 	if (node)
 	{
@@ -75,18 +76,18 @@ inline _inline static void _free_list (_list_node_t **__head)
 /*
  * _insert Function insert a _list_node_t with __state value before __next node
  */
-inline _inline static void _insert (_list_node_t **__next, unsigned __state)
+inline _inline static void _insert (_list_node_t **__next, unsigned __state, allocator_t *__alloc)
 {
-	*__next = __new_list_node (__state, *__next);
+	*__next = __new_list_node (__state, *__next, __alloc);
 }
 
 /*
  * _copy_list Function copied __src_list to __new_list
  */
-inline _inline static void _copy_list (_list_node_t **__new_list_head, const _list_node_t *__src_list_head)
+inline _inline static void _copy_list (_list_node_t **__new_list_head, const _list_node_t *__src_list_head, allocator_t *__alloc)
 {
 	for (; __src_list_head; __new_list_head = (_list_node_t **) *__new_list_head, __src_list_head = __src_list_head->next)
-		*__new_list_head = __new_list_node (__src_list_head->state, NULL); 
+		*__new_list_head = __new_list_node (__src_list_head->state, NULL, __alloc); 
 }
 
 /*
@@ -108,9 +109,9 @@ typedef struct __s_set
 /*
  * Return mem chunk with size equal sizeof (state_set_t)
  */
-state_set_t *new_state_set ()
+state_set_t *new_state_set (allocator_t *__alloc)
 {
-	return (state_set_t *) calloc (1, sizeof (state_set_t));
+	return (state_set_t *) zalloc (sizeof (state_set_t), __alloc);
 }
 
 /*
@@ -127,7 +128,7 @@ void free_state_set (state_set_t *__set)
  */
 void copy_state_set (state_set_t *__dest_set, const state_set_t *__src_set)
 {
-	_copy_list (&__dest_set->head, __src_set->head);
+	_copy_list (&__dest_set->head, __src_set->head, NULL);
 }
 
 /*
@@ -152,7 +153,7 @@ void update_state_set (void *__dest, unsigned __state)
 		else 
 			break;
 	// Insert value in linst (see _insert description)
-	_insert (__dest, __state);
+	_insert (__dest, __state, NULL);
 EXIT:
 	return;
 }
@@ -193,14 +194,14 @@ void union_state_set (void *__dest, const void *__first, const void *__second)
 		{
 			__second = ((_list_node_t *) __second)->next;
 		}
-		_insert (__dest, ((_list_node_t *) __first)->state);
+		_insert (__dest, ((_list_node_t *) __first)->state, NULL);
 	}
 		
 	/*
 	 * _insert ramaining values to __dest list
 	 */
 	for (; __second; __second = ((_list_node_t *) __second)->next, __dest = &(*(_list_node_t **) __dest)->next)
-		_insert (__dest, ((_list_node_t *) __second)->state);
+		_insert (__dest, ((_list_node_t *) __second)->state, NULL);
 }
 
 /*
@@ -228,7 +229,7 @@ void intersection_state_set (void *__dest, const void *__first, const void *__se
 		} 
 		else if (((_list_node_t *) __first)->state == ((_list_node_t *) __second)->state)
 		{
-			_insert (__dest, ((_list_node_t *) __first)->state);
+			_insert (__dest, ((_list_node_t *) __first)->state, NULL);
 			__dest = &(*(_list_node_t **) __dest)->next;
 
 			__second = ((_list_node_t *) __second)->next;
@@ -271,14 +272,14 @@ int main (int argc, char *argv[])
 	++argv;
 	for (int i = 0; i < argc; ++i)
 	{
-		sets[i] = new_state_set ();
+		sets[i] = new_state_set (NULL);
 		set_from_str (sets[i], argv[i]);
 
 		print_list (sets[i]->head);
 	}
 
 	// Copy test
-	state_set_t *res = new_state_set ();
+	state_set_t *res = new_state_set (NULL);
 
 	copy_state_set (res, sets[0]);
 	print_list (res->head);
@@ -286,7 +287,7 @@ int main (int argc, char *argv[])
 	free_state_set (res);
 
 	// Union test
-	res = new_state_set ();
+	res = new_state_set (NULL);
 
 	union_state_set (res, sets[0], sets[1]);
 	print_list (res->head);
@@ -294,7 +295,7 @@ int main (int argc, char *argv[])
 	free_state_set (res);
 
 	// Intersection test
-	res = new_state_set ();
+	res = new_state_set (NULL);
 
 	intersection_state_set (res, sets[0], sets[1]);
 	print_list (res->head);

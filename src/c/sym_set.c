@@ -1,12 +1,13 @@
 #include <stdlib.h>
 #include "sym_set.h"
+#include "alloc.h"
 
 /*
  * Create empty symbol set (all bits set to 0)
  */
-sym_set_t *new_sym_set ()
+sym_set_t *new_sym_set (allocator_t *__alloc)
 {
-	sym_set_t *sym_set = calloc (1, sizeof (sym_set_t));
+	sym_set_t *sym_set = zalloc (sizeof (sym_set_t), __alloc);
 	return sym_set;
 }
 
@@ -26,7 +27,7 @@ int main (int argc, char *argv[])
 	if (argc != 2)
 		return 1;
 	
-	sym_set_t *sym_set = new_sym_set ();
+	sym_set_t *sym_set = new_sym_set (NULL);
 
 	for (++argv; **argv != '\0'; ++*argv){
 		add_sym (sym_set, *argv[0]);

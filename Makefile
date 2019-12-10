@@ -17,10 +17,13 @@ TEST_LEXER_DEPS		= \
 
 TEST_SYM_SET		= $(TEST_BIN_DIR)sym_set
 TEST_SYM_SET_DEPS	= \
-				$(TEST_BIN_DIR)sym_set.o
+				$(TEST_BIN_DIR)sym_set.o\
+				$(TEST_BIN_DIR)alloc.o
+
 TEST_STATE_SET		= $(TEST_BIN_DIR)state_set
 TEST_STATE_SET_DEPS	= \
-				$(TEST_BIN_DIR)state_set.o
+				$(TEST_BIN_DIR)state_set.o\
+				$(TEST_BIN_DIR)alloc.o
 
 $(TEST_SYM_SET): $(TEST_SYM_SET_DEPS)
 	gcc $^ -o $@
