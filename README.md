@@ -1,6 +1,8 @@
-In this project i try realise regular expression compiler
+# What is it?
 
-example: "[a-b]*|[b-z]+|a?"
+This is a _regular expression compiler_.
 
-In this case input string transforms to DFSM table
+#Why is it?
+
+This project is tool for another project - _compilers compiler_.
 
