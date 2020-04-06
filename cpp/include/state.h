@@ -7,7 +7,7 @@ class state : public positions_t
 {
   public:
 	state (positions_t &ps, int index)
-	  : m_positions (ps), m_index (index), m_marked (false)
+	  : positions_t (ps), m_index (index), m_marked (false)
 	{ }
 
 	int index () const
@@ -30,4 +30,6 @@ class state : public positions_t
   private:
 	int m_index;
 	bool m_marked;
-}
+};
+
+#endif // STATE_H_

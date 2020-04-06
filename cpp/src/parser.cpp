@@ -3,7 +3,7 @@
 std::shared_ptr <node>
 parser::parse ()
 {
-  auto ptr = cat ();
+  auto ptr = concat ();
 
   if (m_top->tag () != '\0')
   {
@@ -11,8 +11,7 @@ parser::parse ()
 	exit (-1);
   }
 
-  return std::shared_ptr <node> (new cat (ptr,
-      std::shared_ptr <node> (new symbol (m_top))))
+  return std::shared_ptr <node> (new cat (ptr, std::shared_ptr <node> (new literal (m_top))));
 }
 
 bool
@@ -54,7 +53,7 @@ parser::catable ()
 std::shared_ptr <node>
 parser::symbol ()
 {
-  std::shared_ptr <node> ptr (new symbol (m_top))
+  std::shared_ptr <node> ptr (new literal (m_top));
 
   move ();
 

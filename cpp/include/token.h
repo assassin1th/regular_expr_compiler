@@ -1,7 +1,8 @@
 #ifndef TOKEN_H_
 #define TOKEN_H_
 
-enum token_type {SYM = 256}
+#include <set>
+enum token_type {SYM = 256};
 
 class token
 {
@@ -14,24 +15,33 @@ class token
 	  return m_tag;
 	}
 
-	virtual const std::set <char> &&val () const = 0;
+	virtual std::set <char> val () const = 0;
   private:
 	int m_tag;
-}
+};
+
+class meta : public token
+{
+  public:
+	meta (char c) : token (c)
+	{ }
+
+	virtual std::set <char> val () const override;
+};
 
 class sym : public token
 {
   public:
-	sym (char c) : node (SYM), m_c (c)
+	sym (char c) : token (SYM), m_c (c)
 	{ }
 
-	virtual const std::set <char> &&val () const
+	virtual std::set <char> val () const
 	{
-	  return std::move (std::set (m_c));
+	  return std::move (std::set <char> ({m_c}));
 	}
 
-  private
+  private:
 	char m_c;
-}
+};
 
 #endif // TOKEN_H_

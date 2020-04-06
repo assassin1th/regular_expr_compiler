@@ -3,16 +3,18 @@
 
 #include <string>
 #include <vector>
+#include <array>
 
 class iregex_compiler
 {
   public:
 	iregex_compiler () = default;
 
-	virtual std::vector <unit8_t [128]> compile (const std::string &src);
+	virtual std::vector <uint8_t [128]>
+	compile (const std::string &src) = 0;
 };
 
-class isingle_regex_compiler : public iregex_compiler
+class isingle_regex_compiler : public virtual iregex_compiler
 {
   public:
 	isingle_regex_compiler () = default;

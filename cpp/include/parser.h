@@ -1,6 +1,7 @@
 #ifndef PARSER_H_
 #define PARSER_H_
 
+#include <iostream>
 #include "lexer.h"
 #include "AST.h"
 
@@ -28,6 +29,6 @@ class parser
 
 	lexer m_lex;
 	std::shared_ptr <token> m_top;
-}
+};
 
 #endif // PARSER_H_

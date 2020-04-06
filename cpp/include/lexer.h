@@ -8,14 +8,14 @@
 class lexer
 {
   public:
-	lexer (const std::string &src) : m_src (src), m_peek (m_src->begin ())
+	lexer (const std::string &src) : m_src (src), m_peek (m_src.begin ())
 	{ }
 
 	std::shared_ptr <token> scan ();
 
   private:
 	std::string m_src;
-	std::const_iterator <std::string> m_peek;
-}
+	std::string::const_iterator m_peek;
+};
 
 #endif // LEXER_H_

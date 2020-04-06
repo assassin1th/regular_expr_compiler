@@ -3,11 +3,11 @@
 positions_t
 state::follow_by_sym (char symbol)
 {
-  positions_t res ();
+  positions_t res;
 
   for (auto pos : *this)
 	if (pos->check_symbol (symbol))
-	  res.merge (pos);
+	  res.insert (pos);
   
   return res;
 }

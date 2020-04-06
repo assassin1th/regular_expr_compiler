@@ -8,13 +8,16 @@ class node
 {
   public:
 	node () = default;
+	node (positions_t &first_pos, positions_t &last_pos)
+	: m_first_pos (first_pos), m_last_pos (last_pos)
+	{ }
 
-	const positions_t &first_pos () const
+	positions_t &first_pos () 
 	{
 	  return m_first_pos;
 	}
 
-	const positions_t &last_pos () const
+	positions_t &last_pos () 
 	{
 	  return m_last_pos;
 	}
@@ -44,21 +47,22 @@ class cat : public virtual node
 	  return m_left->nullable () && m_right->nullable ();
 	}
 
-  private:
+  protected:
 	virtual void calc_follow_pos () override;
 
+  private:
 	std::shared_ptr <node> m_left;
 	std::shared_ptr <node> m_right;
 };
 
-class symbol : public virtual node
+class literal : public virtual node
 {
   public:
-	symbol (const std::shared_ptr <token> &tok)
-	: m_position (new position (tok->val))
+	literal (const std::shared_ptr <token> &tok)
+	: m_position (new position (tok->val ()))
 	{
-	  m_first_pos = std::set (m_position);
-	  m_last_pos = std::set (m_position);
+	  m_first_pos.insert (m_position);
+	  m_last_pos.insert (m_position);
 	}
 
 	virtual bool nullable () const override
@@ -66,9 +70,10 @@ class symbol : public virtual node
 	  return false;
 	}
 
-  private:
+  protected:
 	virtual void calc_follow_pos () override;
 
+  private:
 	std::shared_ptr <position> m_position;
 };
 

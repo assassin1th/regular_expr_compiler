@@ -4,32 +4,34 @@
 #include <set>
 #include <memory>
 
-using positions_t = std::set <const std::shared_ptr <position>>;
 
 class position
 {
   public:
-	position (const std::set <char> &abc) : m_abc (abc), m_followpos ()
+	position (const std::set <char> &abc) : m_abc (abc), m_follow_pos ()
 	{
-	};
+	}
 
-	void add_followpos (positions_t &positions)
+	void add_follow_pos (std::set<std::shared_ptr <position>> &positions)
 	{
-	  m_followpos.merge (positions);
-	};
+	  m_follow_pos.merge (positions);
+	}
 
 	bool check_symbol (char symbol)
 	{
 	  return m_abc.find (symbol) != m_abc.end ();
-	};
+	}
 
-	const std::set<position> &followpos ()
+	const std::set<std::shared_ptr <position>> &followpos () const
 	{
-	  return m_followpos;
-	};
+	  return m_follow_pos;
+	}
 
   private:
-	positions_t m_followpos;
+	std::set <std::shared_ptr <position>> m_follow_pos;
 	std::set <char> m_abc;
-}
+};
+
+using positions_t = std::set <std::shared_ptr <position>>;
+
 #endif // POSITION_H_

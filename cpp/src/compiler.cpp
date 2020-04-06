@@ -9,40 +9,41 @@
 using states_t = std::list <state>;
 using dtran_t = std::vector <uint8_t [128]>;
 
-bool
-find_in_states (states_t &s, state_t &key)
+states_t::iterator
+find_in_states (states_t &s, positions_t &key)
 {
   return std::find (s.begin (), s.end (), key);
 }
 
-std::vector <uint8_t [128]>
-isingle_regexx_compiler::compile (const std::string &src)
+dtran_t
+isingle_regex_compiler::compile (const std::string &src)
 {
   parser pr (src);
 
-  auto ptr = pr->parse ();
+  auto ptr = pr.parse ();
   
   ptr->gen_follow_pos ();
-  states_t states (ptr->first_pos ());
-  dtran_t dtran ();
+  states_t states ({state (ptr->first_pos (), 0)});
+  dtran_t dtran;
 
+  uint8_t index=0;
   for (auto s : states)
   {
 	s.mark ();
 
-	for (int a = 0; a < 128; ++a)
+	for (int c = 0; c < 128; ++c)
 	{
-	  auto u = s.follos_by_sym (a);
+	  auto u = s.follow_by_sym (c);
 
 	  auto it = find_in_states (states, u);
 	  if (it == states.end ())
 	  {
 		states.push_back (state (u, ++index));
-		dtran[s.index ()][a] = index;
+		dtran[s.index ()][c] = index;
 	  }
 	  else
 	  {
-		dtran[s.index ()][a] = it->index ();
+		dtran[s.index ()][c] = it->index ();
 	  }
 	}
   }

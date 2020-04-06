@@ -33,3 +33,7 @@
 
 # Qtcreator
 *.pro*
+
+bin/*
+main*
+*.out
