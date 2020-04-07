@@ -11,8 +11,26 @@ DEPS = $(BIN_DIR)AST.o\
 	   $(BIN_DIR)parser.o\
 	   $(BIN_DIR)state.o
 
+EXAMPLES_DIR = examples/
+EXAMPLES_BIN_DIR = $(EXAMPLES_DIR)bin/
+USAGE_EXAMPLE = $(EXAMPLES_DIR)simple_usage
+EXAMPLES_SRC_DIR = $(EXAMPLES_DIR)sources/
+
+EXAMPLE_SIMPLE_USAGE_DEPS = $(EXAMPLES_BIN_DIR)main.o
+
+EXAMPLES_DEPS = $(DEPS)\
+				$(EXAMPLE_SIMPLE_USAGE_DEPS)
+
+EXAMPLES_FLAGS = $(FLAGS)
+
 $(BIN_DIR)%.o : $(CPP_SRC_DIR)%.cpp
 	$(CXX) -c $^ $(FLAGS) -o $@
+
+$(EXAMPLES_BIN_DIR)%.o : $(EXAMPLES_SRC_DIR)%.cpp
+	$(CXX) -c $^ $(EXAMPLES_FLAGS) -o $@
+
+$(USAGE_EXAMPLE) : $(EXAMPLES_DEPS)
+	$(CXX) $^ -o $@
 
 main: $(DEPS)
 	touch main

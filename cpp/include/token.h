@@ -10,7 +10,7 @@ class token
 	token (int tag) : m_tag (tag)
 	{ }
 
-	int tag ()
+	int tag () const
 	{
 	  return m_tag;
 	}
@@ -26,7 +26,10 @@ class meta : public token
 	meta (char c) : token (c)
 	{ }
 
-	virtual std::set <char> val () const override;
+	virtual std::set <char> val () const
+	{
+	  return std::set <char> ({(char) this->tag ()});
+	}
 };
 
 class sym : public token

@@ -8,6 +8,7 @@
 class parser
 {
   public:
+	enum {LIMITER = '\0'};
 	parser (const std::string &src) : m_lex (src)
 	{
 	  move ();

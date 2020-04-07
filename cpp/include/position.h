@@ -3,6 +3,7 @@
 
 #include <set>
 #include <memory>
+#include <algorithm>
 
 
 class position
@@ -14,7 +15,9 @@ class position
 
 	void add_follow_pos (std::set<std::shared_ptr <position>> &positions)
 	{
-	  m_follow_pos.merge (positions);
+	  std::set_union (m_follow_pos.begin (), m_follow_pos.end (),
+	                  positions.begin (), positions.end (),
+					  std::inserter (m_follow_pos, m_follow_pos.end ()));
 	}
 
 	bool check_symbol (char symbol)
@@ -22,7 +25,7 @@ class position
 	  return m_abc.find (symbol) != m_abc.end ();
 	}
 
-	const std::set<std::shared_ptr <position>> &followpos () const
+	const std::set<std::shared_ptr <position>> &follow_pos () const
 	{
 	  return m_follow_pos;
 	}
