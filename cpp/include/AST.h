@@ -26,11 +26,15 @@ class node
 	{
 	  this->calc_follow_pos ();
 	}
-
-	virtual bool nullable () const = 0;
+	
+	bool nullable () const 
+	{
+	  return this->is_nullable ();
+	}
 
   protected:
 	virtual void calc_follow_pos () = 0;
+	virtual bool is_nullable () const = 0;
 
 	positions_t m_first_pos;
 	positions_t m_last_pos;
@@ -41,13 +45,13 @@ class cat : public virtual node
   public:
 	cat (const std::shared_ptr <node> &left,
 		 const std::shared_ptr <node> &right);
-  
-	virtual bool nullable () const override
+
+  protected:
+	virtual bool is_nullable () const override
 	{
 	  return m_left->nullable () && m_right->nullable ();
 	}
 
-  protected:
 	virtual void calc_follow_pos () override;
 
   private:
@@ -58,19 +62,19 @@ class cat : public virtual node
 class literal : public virtual node
 {
   public:
-	literal (const std::shared_ptr <token> &tok)
+	literal (const std::shared_ptr <const token> &tok)
 	: m_position (new position (tok->val ()))
 	{
 	  m_first_pos.insert (m_position);
 	  m_last_pos.insert (m_position);
 	}
 
-	virtual bool nullable () const override
+  protected:
+	virtual bool is_nullable () const override
 	{
 	  return false;
 	}
 
-  protected:
 	virtual void calc_follow_pos () override;
 
   private:

@@ -29,7 +29,7 @@ class parser
 	std::shared_ptr <node> symbol ();
 
 	lexer m_lex;
-	std::shared_ptr <token> m_top;
+	std::shared_ptr <const token> m_top;
 };
 
 #endif // PARSER_H_

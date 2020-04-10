@@ -1,9 +1,9 @@
 #include "lexer.h"
 
-std::shared_ptr <token>
+std::shared_ptr <const token>
 lexer::scan ()
 {
-  std::shared_ptr <token> ptr = nullptr;
+  std::shared_ptr <const token> ptr = nullptr;
 
   if (*m_peek == '\0')
 	ptr = std::shared_ptr <token> (new meta (*m_peek));

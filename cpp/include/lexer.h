@@ -11,7 +11,7 @@ class lexer
 	lexer (const std::string &src) : m_src (src), m_peek (m_src.begin ())
 	{ }
 
-	std::shared_ptr <token> scan ();
+	std::shared_ptr <const token> scan ();
 
   private:
 	std::string m_src;
