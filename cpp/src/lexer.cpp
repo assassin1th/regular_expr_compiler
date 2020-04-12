@@ -1,17 +1,15 @@
 #include "lexer.h"
 
-std::shared_ptr <const token>
-lexer::scan ()
+token_stream &
+operator>> (token_stream &in, std::shared_ptr <const token> &ptr)
 {
-  std::shared_ptr <const token> ptr = nullptr;
-
-  if (*m_peek == '\0')
-	ptr = std::shared_ptr <token> (new meta (*m_peek));
+  int c = in.get ();
+  if (c == '\0' || c == EOF)
+	ptr = std::shared_ptr <const token> (new meta (END_OF_PAT));
   else
   {
-	ptr = std::shared_ptr <token> (new sym (*m_peek));
-	++m_peek;
+	ptr = std::shared_ptr <const token> (new sym (c));
   }
 
-  return ptr;
+  return in;
 }

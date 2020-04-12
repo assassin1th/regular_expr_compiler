@@ -4,18 +4,16 @@
 #include "token.h"
 #include <memory>
 #include <string>
+#include <istream>
 
-class lexer
+class token_stream : public std::istream
 {
   public:
-	lexer (const std::string &src) : m_src (src), m_peek (m_src.begin ())
+	token_stream (std::streambuf *buf) : std::istream (buf)
 	{ }
 
-	std::shared_ptr <const token> scan ();
-
-  private:
-	std::string m_src;
-	std::string::const_iterator m_peek;
+	friend token_stream &operator>> (token_stream &in,
+	    std::shared_ptr <const token> &ptr);
 };
 
 #endif // LEXER_H_

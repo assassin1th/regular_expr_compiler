@@ -5,7 +5,7 @@ parser::parse ()
 {
   auto ptr = concat ();
 
-  if (m_top->tag () != '\0')
+  if (m_top->tag () != END_OF_PAT)
   {
 	std::cout << "expected end of pattern string" << std::endl;
 	exit (-1);

@@ -2,7 +2,7 @@
 #define TOKEN_H_
 
 #include <set>
-enum token_type {SYM = 256};
+enum token_type {END_OF_PAT = '\0', SYM = 256};
 
 class token
 {

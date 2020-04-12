@@ -4,12 +4,13 @@
 #include <iostream>
 #include "lexer.h"
 #include "AST.h"
+#include <sstream>
 
 class parser
 {
   public:
 	enum {LIMITER = '\0'};
-	parser (const std::string &src) : m_lex (src)
+	parser (const std::string &src) : m_tok_in (new std::stringbuf (src))
 	{
 	  move ();
 	}
@@ -19,7 +20,7 @@ class parser
   private:
 	void move ()
 	{
-	  m_top = m_lex.scan ();
+	  m_tok_in >> m_top;
 	}
 
 	bool is_catable ();
@@ -28,7 +29,7 @@ class parser
 	std::shared_ptr <node> catable ();
 	std::shared_ptr <node> symbol ();
 
-	lexer m_lex;
+	token_stream m_tok_in;
 	std::shared_ptr <const token> m_top;
 };
 
