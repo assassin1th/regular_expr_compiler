@@ -7,13 +7,13 @@ CXX = g++
 
 DEPS = $(BIN_DIR)AST.o\
        $(BIN_DIR)compiler.o\
-	   $(BIN_DIR)lexer.o\
+	   $(BIN_DIR)token_stream.o\
 	   $(BIN_DIR)parser.o\
 	   $(BIN_DIR)state.o
 
 EXAMPLES_DIR = examples/
 EXAMPLES_BIN_DIR = $(EXAMPLES_DIR)bin/
-USAGE_EXAMPLE = $(EXAMPLES_DIR)simple_usage
+USAGE_EXAMPLE = $(EXAMPLES_DIR)simple_usage.out
 EXAMPLES_SRC_DIR = $(EXAMPLES_DIR)sources/
 
 EXAMPLE_SIMPLE_USAGE_DEPS = $(EXAMPLES_BIN_DIR)main.o

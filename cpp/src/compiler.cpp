@@ -1,7 +1,6 @@
 #include "compiler.h"
 #include "state.h"
 #include "parser.h"
-#include "lexer.h"
 #include "position.h"
 #include <list>
 #include <algorithm>

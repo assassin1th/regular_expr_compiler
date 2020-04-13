@@ -1,7 +1,7 @@
-#include "lexer.h"
+#include "token_stream.h"
 
-token_stream &
-operator>> (token_stream &in, std::shared_ptr <const token> &ptr)
+std::istream &
+operator>> (std::istream &in, std::shared_ptr <const token> &ptr)
 {
   int c = in.get ();
   if (c == '\0' || c == EOF)

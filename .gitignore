@@ -36,4 +36,4 @@
 
 bin/*
 main*
-*.out
+**/*.out
