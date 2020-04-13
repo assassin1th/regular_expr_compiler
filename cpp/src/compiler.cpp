@@ -4,6 +4,7 @@
 #include "position.h"
 #include <list>
 #include <algorithm>
+#include <iostream>
 
 using states_t = std::list <state>;
 using dtran_t = std::vector <std::array <uint8_t, 128> >;
@@ -30,9 +31,10 @@ check_sym_in_state (state &s, char c)
 dtran_t
 isingle_regex_compiler::compile (const std::string &src) const
 {
-  parser pr (src);
+  std::stringstream in (src);
+  std::shared_ptr <node> ptr;
 
-  auto ptr = pr.parse ();
+  in >> ptr;
   
   ptr->gen_follow_pos ();
 

@@ -1,3 +1,4 @@
+#include <iostream>
 #include "parser.h"
 
 std::shared_ptr <node>
@@ -60,4 +61,9 @@ parser::symbol ()
   return ptr;
 }
 	  
-
+std::stringstream &
+operator>> (std::stringstream &in, std::shared_ptr <node> &ptr)
+{
+  ptr = parser (in).parse ();
+  return in;
+}
