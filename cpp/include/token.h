@@ -1,7 +1,7 @@
 #ifndef TOKEN_H_
 #define TOKEN_H_
 
-#include <set>
+#include "set.h"
 enum token_type {END_OF_PAT = '\0', SYM = 256};
 
 class token
@@ -15,7 +15,7 @@ class token
 	  return m_tag;
 	}
 
-	virtual std::set <char> val () const = 0;
+	virtual set <char> val () const = 0;
   private:
 	int m_tag;
 };
@@ -26,9 +26,9 @@ class meta : public token
 	meta (char c) : token (c)
 	{ }
 
-	virtual std::set <char> val () const
+	virtual set <char> val () const
 	{
-	  return std::set <char> ({(char) this->tag ()});
+	  return set <char> ((char) this->tag ());
 	}
 };
 
@@ -38,9 +38,9 @@ class sym : public token
 	sym (char c) : token (SYM), m_c (c)
 	{ }
 
-	virtual std::set <char> val () const
+	virtual set <char> val () const
 	{
-	  return std::move (std::set <char> ({m_c}));
+	  return set <char> (m_c);
 	}
 
   private:

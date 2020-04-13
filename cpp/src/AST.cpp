@@ -11,15 +11,10 @@ cat::cat (const std::shared_ptr <node> &left,
   auto &left_last_pos = left->last_pos ();
 
   if (left->nullable ())
-	std::set_union (m_first_pos.begin (), m_first_pos.begin (),
-	                right_first_pos.begin (), right_first_pos.end (),
-					std::inserter (m_first_pos, m_first_pos.end ()));
-                    
+    sunion (m_first_pos, right_first_pos, m_first_pos);
   
   if (right->nullable ())
-	std::set_union (m_last_pos.begin (), m_last_pos.end (),
-	                left_last_pos.begin (), left_last_pos.end (),
-					std::inserter (m_last_pos, m_last_pos.end ()));
+	sunion (m_last_pos, left_last_pos, m_last_pos);
 }
 
 void

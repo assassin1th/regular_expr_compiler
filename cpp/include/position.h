@@ -1,7 +1,7 @@
 #ifndef POSITION_H_
 #define POSITION_H_
 
-#include <set>
+#include "set.h"
 #include <memory>
 #include <algorithm>
 
@@ -9,32 +9,30 @@
 class position
 {
   public:
-	position (const std::set <char> &abc) : m_abc (abc), m_follow_pos ()
+	position (const set <char> &abc) : m_abc (abc), m_follow_pos ()
 	{
 	}
 
-	void add_follow_pos (std::set<std::shared_ptr <position>> &positions)
+	void add_follow_pos (set<std::shared_ptr <position>> &positions)
 	{
-	  std::set_union (m_follow_pos.begin (), m_follow_pos.end (),
-	                  positions.begin (), positions.end (),
-					  std::inserter (m_follow_pos, m_follow_pos.end ()));
+	  sunion (m_follow_pos, positions, m_follow_pos);
 	}
 
 	bool check_symbol (char symbol)
 	{
-	  return m_abc.find (symbol) != m_abc.end ();
+	  return m_abc.find (symbol);
 	}
 
-	const std::set<std::shared_ptr <position>> &follow_pos () const
+	const set<std::shared_ptr <position>> &follow_pos () const
 	{
 	  return m_follow_pos;
 	}
 
   private:
-	std::set <std::shared_ptr <position>> m_follow_pos;
-	std::set <char> m_abc;
+	set <std::shared_ptr <position>> m_follow_pos;
+	set <char> m_abc;
 };
 
-using positions_t = std::set <std::shared_ptr <position>>;
+using positions_t = set <std::shared_ptr <position>>;
 
 #endif // POSITION_H_

@@ -8,10 +8,8 @@ state::follow_by_sym (char symbol)
 
   for (auto pos : *this)
 	if (pos->check_symbol (symbol))
-	  std::set_union (res.begin (), res.end (),
-	                  pos->follow_pos().begin (), pos->follow_pos ().end (),
-					  std::inserter (res, res.end ()));
-  
+	  sunion (res, pos->follow_pos (), res);
+
   return res;
 }
 

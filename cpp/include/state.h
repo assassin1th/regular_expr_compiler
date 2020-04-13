@@ -9,7 +9,7 @@ class state : public positions_t
 	using index_type = uint8_t;
 
 	state (positions_t &ps, index_type index)
-	  : positions_t (ps), m_index (index), m_marked (false)
+	  : positions_t (ps), m_index (index)
 	{ }
 
 	index_type index () const
