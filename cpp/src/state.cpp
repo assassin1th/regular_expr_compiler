@@ -14,3 +14,14 @@ state::follow_by_sym (char symbol)
   
   return res;
 }
+
+bool
+state::check_sym (char symbol) const
+{
+  for (auto pos : *this)
+	if (pos->check_symbol (symbol))
+	  return true;
+  
+  return false;
+}
+

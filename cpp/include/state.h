@@ -6,11 +6,13 @@
 class state : public positions_t
 {
   public:
-	state (positions_t &ps, int index)
+	using index_type = uint8_t;
+
+	state (positions_t &ps, index_type index)
 	  : positions_t (ps), m_index (index), m_marked (false)
 	{ }
 
-	int index () const
+	index_type index () const
 	{
 	  return m_index;
 	}
@@ -27,8 +29,10 @@ class state : public positions_t
 
 	positions_t follow_by_sym (char symbol);
 
+	bool check_sym (char symbol) const;
+
   private:
-	int m_index;
+	index_type m_index;
 	bool m_marked;
 };
 

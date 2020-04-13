@@ -9,7 +9,8 @@ DEPS = $(BIN_DIR)AST.o\
        $(BIN_DIR)compiler.o\
 	   $(BIN_DIR)token_stream.o\
 	   $(BIN_DIR)parser.o\
-	   $(BIN_DIR)state.o
+	   $(BIN_DIR)state.o\
+	   $(BIN_DIR)dtran.o
 
 EXAMPLES_DIR = examples/
 EXAMPLES_BIN_DIR = $(EXAMPLES_DIR)bin/

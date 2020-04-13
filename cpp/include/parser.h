@@ -8,7 +8,6 @@
 class parser
 {
   public:
-	enum {LIMITER = '\0'};
 	parser (const parser &) = delete;
 
 	friend std::stringstream &
