@@ -17,23 +17,12 @@ class state : public positions_t
 	  return m_index;
 	}
 
-	bool is_marked () const
-	{
-	  return m_marked;
-	}
-
-	void mark ()
-	{
-	  m_marked = true;
-	}
-
 	positions_t follow_by_sym (char symbol);
 
 	bool check_sym (char symbol) const;
 
   private:
 	index_type m_index;
-	bool m_marked;
 };
 
 #endif // STATE_H_

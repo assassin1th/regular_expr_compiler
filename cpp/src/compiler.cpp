@@ -31,8 +31,6 @@ isingle_regex_compiler::compile (const std::string &src) const
   uint8_t index=0;
   for (auto s : states)
   {
-	s.mark ();
-
 	for (int c = 0; c < 128; ++c)
 	{
 	  auto u = s.follow_by_sym (c);
