@@ -6,30 +6,14 @@
 #include <algorithm>
 #include <iostream>
 
-using states_t = std::list <state>;
-
-states_t::iterator
-find_in_states (states_t &s, positions_t &key)
-{
-  return std::find (s.begin (), s.end (), key);
-}
-
 dtran
-isingle_regex_compiler::compile (const std::string &src) const
+regex_compiler::compile (const std::vector <std::string> &src)
 {
-  std::stringstream in (src);
-  std::shared_ptr <node> ptr;
-
-  in >> ptr;
-  
-  ptr->gen_follow_pos ();
-
-  states_t states ({state (ptr->first_pos (), 0)});
+  this->init_states (src);
 
   dtran tab;
 
-  uint8_t index=0;
-  for (auto s : states)
+  for (auto s : m_states)
   {
 	for (int c = 0; c < 128; ++c)
 	{
@@ -40,11 +24,11 @@ isingle_regex_compiler::compile (const std::string &src) const
 		continue;
 	  }
 
-	  auto it = find_in_states (states, u);
-	  if (it == states.end ())
+	  auto it = std::find (m_states.begin (), m_states.end (), u);
+	  if (it == m_states.end ())
 	  {
-		states.push_back (state (u, ++index));
-		tab.add_transition (s, states.back (), c);
+		m_states.push_back (state (u, m_states.size ()));
+		tab.add_transition (s, m_states.back (), c);
 	  }
 	  else
 	  {
@@ -55,3 +39,31 @@ isingle_regex_compiler::compile (const std::string &src) const
 
   return tab;
 }
+
+void
+single_regex_compiler
+    ::init_states (const std::vector <std::string> &src)
+{
+  std::stringstream in (src[0]);
+
+  std::shared_ptr <node> ptr;
+
+  in >> ptr;
+  
+  ptr->gen_follow_pos ();
+
+  m_states.push_back (state (ptr->first_pos (), 0));
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

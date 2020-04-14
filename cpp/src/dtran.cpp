@@ -14,7 +14,7 @@ dtran::add_transition (const state &cur, const state &next, char sym)
   if (next_ix >= m_tab.size ())
   {
 	m_tab.resize (next_ix + 1);
-	if (next.check_sym (iregex_compiler::LIMITER))
+	if (next.check_sym (regex_compiler::LIMITER))
 	{
 	  std::fill_n (m_tab[next_ix].begin (), m_tab[next_ix].size (),
 	      dtran::HOST_STATE);

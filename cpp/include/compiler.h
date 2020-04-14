@@ -3,26 +3,33 @@
 
 #include <string>
 #include <vector>
-#include <array>
+#include <list>
 #include "dtran.h"
 
-class iregex_compiler
+class regex_compiler
 {
   public:
 	enum {LIMITER = '\0'};
-	iregex_compiler () = default;
+	regex_compiler () = default;
 
-	virtual dtran
-	compile (const std::string &src) const = 0;
+	dtran
+	compile (const std::vector <std::string> &src);
+  protected:
+	using states_t = std::list <state>;
+
+	virtual void
+	init_states (const std::vector <std::string> &src) = 0;
+
+	states_t m_states;
 };
 
-class isingle_regex_compiler : public virtual iregex_compiler
+class single_regex_compiler : public virtual regex_compiler
 {
   public:
-	isingle_regex_compiler () = default;
-
-	virtual dtran
-	compile (const std::string &src) const override;
+	single_regex_compiler () = default;
+  protected:
+	void
+	init_states (const std::vector <std::string> &src) override;
 };
 
 #endif // COMPILER_H_
